@@ -1,0 +1,257 @@
+
+
+
+{
+  "pages": [
+    {
+      
+      
+      
+      "content": "\n",
+      "url": "/404.html"
+    },{
+      
+      "title": "Blog",
+      "description": "The official Hydejack blog. Version updates, example content and how-to guides on how to blog with Jekyll.\n",
+      "content": "\n",
+      "url": "/blog/"
+    },{
+      
+      
+      
+      "content": "\n",
+      "url": "/offline.html"
+    },{
+      
+      "title": "Posts",
+      "description": "This is the list layout for showing blog posts, which shows just the title and groups them by year of publication. Check out the blog layout for comparison.\n",
+      "content": "\n",
+      "url": "/posts/"
+    },{
+      
+      "title": "Projects",
+      "description": "\n",
+      "content": "notesbyair@gmail.com.\n\n\n",
+      "url": "/projects/"
+    },{
+      
+      "title": "Résumé*",
+      "description": "This is the description of your resume page, as it will be seen by search engines. You’ll probably want to modify it in resume.md, and maybe set hide_description to true in the front matter.\n",
+      "content": "\n",
+      "url": "/resume/"
+    }
+  ], 
+  "documents": [
+    {
+      "image": "/assets/blog/solid.jpg",
+      "title": "Solid Design Principle Revisit",
+      "date": "2020-05-23 00:00:00 -0400",
+      "description": "This post is dedicated to those who are trying to learn the SOLID design principle. Some of my quick cases will give you easy ideas, and follow the reference links to understand more.   Five principles of S.O.L.I.D by Robert C. Martin is core and fundamental to any Agile Development or Adaptive software development. Let’s get started.\n",
+      "content": "\n  Single-Responsibility Principle\n  Open-closed Principle\n  Liskov substitution principle\n  Interface Segrgation Principle\n  Dependency Inversion Principle\n  References\n\n\nFive principles of S.O.L.I.D by Robert C. Martin is core and fundamental to any Agile Development or Adaptive software development. Let’s get started.\n\nSingle-Responsibility Principle\n\n\n  Keep it simple, only one object is responsible for a feature in your entire application.\n\n\nTry this: Can you think of objects where it is similar to a Notepad and methods(like saving in pdf/json/etc)?\nThere are several ways we can design it, I have added some best practices below, let me know your thoughts.\n\n\n  Best practice\n\n\nThe below code snippet is having two classes, one to hold Notepad content and another generate Report in PDF.\n\npublic class Doc {\n    private String content;\n   // ...\n    Doc(String content) {\n        this.content = content;\n    }\n   // ...\n}\n\n// Report in seperate class\npublic class Report {\n    public PDF output;\n    ...\n    Report(String doc) { ... }\n    private String pdf() { ... }\n    ...\n}\n\n\n\n  Not recommended way\n\n\nBelow Doc class is having content and report generation code, so the Doc has two responsibilities, one is handling content and another is generating the report.\n\npublic class Doc {\n    String content;\n    String reportJson;\n    String reportPdf;\n\n    Doc(String content) {\n        this.content = content;\n        this.reportJson = json();\n        this.reportPdf = pdf();\n    }\n\n    private String json() { ... }\n    private String pdf() { ... }\n}\n\n\nWhy the above single class is not recommended?\n\n\n  Since generating a report in a different format will change from time to time, keeping it in Doc class would not be a good idea(changing existing source code involves in lots of testing — so maintenance cost increases), instead, keep Doc class just for storing the content of the Doc.\n\n\nNotes\n\n\n  Repeat:  Keep it simple, if it is complex to your intuition, then definitely it will be more complex to other developers.\n  Caution: The above example is just to illustrate the Principle of Single Responsibility. Not to show how to design actual notepad.\n\n\nOpen-closed Principle\n\n  “Software entities (classes, modules, functions, etc.** should be open for extension, but closed for modification.”\n\n\nTry this: Imagine you are building an MS Office word 2020. The above code is very old version, has just two types of export options(pdf, json), but new MSWord2020 has some new features: — such as text to speech. Also, you will be adding new features after few years. How will do you design ?\n\nThere are several ways we can design it, I have added some Do’s/Don’t below, check across your solution.\n\n\n  Best practice\n\n\ninterface doc { void display(String content); }\n\ninterface doc_feature1 { void feature1(String content); }\n\nclass MSWord2020 implements doc, doc_feature1\n{\n    public void display(String content) {  ... }\n    public void feature1(String content) {  ... }\n}\n\n\n\n  Add new feature in 2030\n\n\ninterface doc_feature2 { void feature2(String content); }\n\nclass MSWord2030 extends MSWord2020 implements doc_feature2 {\n    public void feature2(String content)  {  ... }\n}\n\n\n\n  Not recommended way\n\n\nAlternatively, you can modify the original class to add new feature 2, like below — Below code does not obey Rule 1, i.e, single responsibility principle\n\nclass MSWord2030 {\n    void display() { ... }\n    void feature1() { ... }\n    void feature2() { ... }\n    void feature3() { ... }\n}\n\n\nNotes\n\n  Its always better to program your code in Interfaces and apply inheritance where possible.\n\n\nLiskov substitution principle\n\nThis is the most important and tricky rule to understand, I read several blogs and guides. Try to read this one at least twice.\n\nQuick Test: Are you overriding a method or implementing an interface? If Yes, you must test this rule thoroughly.\n\nS is Child or Extends B, Can you make B = S in your code?\n\n\nCan you succeed by Human = HumanoidRobot? Of course not!\n\n\npublic interface Human {\n    public void eat();\n}\npublic class HumanoidRobot extends Human {\n     // can robot eat ?\n}\n\nHuman obj1 = new Human()\nHuman obj2 = new HumanoidRobot()\n\n\nRepeat: If a class, S, is a subtype of a class, B, then S can be used to replace all instances of B without changing the behaviors of a program. The logic behind this is straightforward. If S is a subtype of B, then it can be expected that S will have the same behaviors as B. Therefore, S can be used in place of B and it would not affect the software. This means that inheritance can be tested by applying substitution.\n\n\n\nNotes\nBelow notes are from the design pattern course in Coursera, feel free to check out.\n\n  The base class is the more generalized class, and therefore, its attributes and behaviors should reflect it. The names given to the attributes and methods, as well as the implementation of each method must be broad enough that all subclasses can use them.\n  If inheritance is not used correctly, it can lead to a violation of the “Liskov Substitution Principle”. This principle uses substitution to determine whether or not inheritance has been properly used.\n  These rules are not programmatically enforced by any object-oriented language. In fact, overriding a base class’s behaviors can have advantages. Subclasses can improve the performance of behaviors of its base class, without changing the expected results of said behavior.\n\n\nsubclass uses different sorting algo, but same behavior.\n\nAnother example: let’s take a look at a class that is an abstraction of a department store. The base class may implement a naive searching algorithm that, in the worst case, iterates through the entire list of the items that the store sells. A subclass could override this method and provide a better search algorithm. Although the approach that the subclass takes to searching is different, the expected behavior and outcome are the same.\n\n\nInterface Segrgation Principle\nSuppose you have an interface for a Robot, operations include run, fight, walk, swim, shoot. Now another company wants to use your code base for Robot and extend to make a Robot which can Speak. But here is the problem, the company doesn’t want to implement swim, fight and shoot operations. So company writes something like below -\n\n\n  Not recommended way\n\n\nThe below code violates Principle 3. Never ever changes the behavior and force the client to implement the behavior. Shoot, Swim, and Fight are irrelevant to New Client.\n\npublic interface Human {\n    public void eat();\n}\npublic class HumanoidRobot extends Human {\n    // Humanoid Robot  - A humanoid is something that has an appearance\n    // resembling a human without actually being one.\n    // can robot eat ? No\n    @override\n    publi void eat() {\n        // do nothing\n    }\n}\n\n\n\n  What is the problem?\n\n\nYou are making client or company implement the operations forcefully. So in order avoid this we need to have interface segregation principle. It’s quite simple, that no class should be forced to depend on methods it does not use.\n\n\n  Best practice\n\n\nSolution to the Don’t part, now read below snippet and compare with above.\n\npublic interface Everything { run() }\n// similar to Object class(root class, it has most generalized methods) in Java\n\npublic class HumanoidRobot extends Everything {\n    public void run() {\n        // code to run using batteries.\n    }\n}\npublic class Human extends Everything {\n    public void run() {\n        // code to run using physical streangth.\n    }\n}\n\n// Example:\n    Everything ev = new HumanoidRobot()\n    Everything ev = new Human()\n// if you apply the substition rule it satisfies, since both does the run operation but differently.\n\n\nDependency Inversion Principle\n\nFrom wikipedia:\n\n  High-level modules should not depend on low-level modules. Both should depend on abstractions.\nAbstractions should not depend on details. Details should depend on abstractions\n\n\nQuite easy to understand using examples\nFirst, Take a look at Java Object Class: Root class to all objects. For example, Take Number, String, Double etc Objects in java extends Object class.\nAll above principles apply to this one. Here suppose you have Robot interface, then all objects of Robot should be referring to an abstraction rather than the concrete implementation. Referring to the above code(Principle-4: Interface Segregation):\n\n\n  Best practice\n\n\nRobot r = new SpeakingRobot()\n\n\n\n  Implementation of SpeakingRobot Class\n\n\npublic interface Robot {\n     void run();\n     void shoot();\n     void swim();\n     void fight();\n     void walk();\n }\n\n// company A wants to extend the Robot to add Speaking feature\n\n\npublic SpeakingRobot extends Robot {\n     @Overrides\n     void run() {\n         // .. inherits from Robot\n     }\n\n     @Overrides\n     void shoot() {\n         // do nothing\n         // return;\n     }\n\n     @Overrides\n     void swim() {\n          // do nothing\n         // return;\n     }\n\n     @Overrides\n     void fight(){\n          // do nothing\n         // return;\n     }\n\n     @Overrides\n     void walk() {\n         // .. inherits from Robot\n     }\n\n     @Overrides\n     void speak() {\n        // code to speak\n     }\n }\n\n\n\n  Not recommended way\n\n\nSpeakingRobot r = new SpeakingRobot() // DONT Declare like this :)\n\n\n  SpeakingRobot class is an actual implementation(low-level class), so any object which might change in future should depend on abstractions(Robot interface is high-level abstraction here).\n\n\ninterface Robot {\n    // very common features, every client must implement are below.\n    void run();\n    void walk();\n}\n\ninterface ShootingRobot extends Robot { void shoot(); }\ninterface SwimmingRobot extends Robot { void swim(); }\ninterface FightingRobot extends Robot { void fight(); }\n\nclass  SpeakingRobot  implements  Robot{\n\n\n    void speak() {\n        // code to speak\n    }\n\n\n    @Override\n    public void run() {\n        // code to run\n    }\n\n    @Override\n    public void walk() {\n        // code to walk\n    }\n}\n\n\nReferences\n\n  Coursera - Design Patterns \n  Liskov Substitution Principle from Dzone\n  Liskov Substitution Principle from Hackernoon\n  Liskov Substitution Principle from Stackoverflow\n  Liskov Substitution Principle from Actual Paper\n\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2020-05-23-solid-design-principle-revisit/"
+    },{
+      "image": "/assets/blog/nvidia.jpg",
+      "title": "How to manage multiple versions of Cuda and cuDNN ?",
+      "date": "2020-05-26 00:00:00 -0400",
+      "description": "I am writing this blog to give some insights on managing multiple versions of Cuda and some links.\n",
+      "content": "\n  this unordered seed list will be replaced by toc as unordered list\n\n\nReferences\n\nFirst of all, I must thank two blog posts, which made my life easier.\n\n\n  https://blog.kovalevskyi.com/multiple-version-of-cuda-libraries-on-the-same-machine-b9502d50ae77\n  https://www.pugetsystems.com/labs/hpc/How-to-install-CUDA-9-2-on-Ubuntu-18-04-1184/\n\n\nGet Started\n\nWhy we are doing this ?\n\n\n  Suppose you want to run some old projects from GitHub.\n  Experiment with new versions of CUDA, and experiment new features of it.\n\n\nCUDA installation\n\nBefore starting, we need to download CUDA and follow steps from NVIDIA for right version.\n\nThe most important steps to follow during CUDA installation.\n\n\n  Do not install CUDA drivers from CUDA-toolkit. Manually install the latest drivers for your graphics card.\n  Do not create the symbolic link during installation process, since we need multiple versions.\n\n\nAutomation Script\n\nThe blogs that I mentioned earlier help a lot, and then I added the below script to make my life even more accessible.\n\n\n  touch ~/.bashrc add below contents to bottom of the file\n\n\n# add below to your env bash file.\n\nfunction _switch_cuda {\n   v=$1\n   export PATH=$PATH:/usr/local/cuda-$v/bin\n   export CUDADIR=/usr/local/cuda-$v\n   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-$v/lib64\n   nvcc --version\n}\n_switch_cuda 10.1 # change the version of your like to load bash.\n\n\ncuDNN installation on all CUDA versions.\n\nFinally, Installing cuDNN is just like copying the source header files into the respective CUDA toolkit path.\nDownload and extract the cuDNN tar file, then run below script to copy lib into right CUDA Dirs.\n\nAfter extraction of cudnn zip, create cudnn_install.sh file and place it like below.\najayramesh @ ubox-r9-1804 ~/tmp/cudnn-10.2-linux-x64-v7.6.5.32\n└─ $ ▶ tree -L 2\n.\n├── cuda\n│   ├── include\n│   ├── lib64\n│   └── NVIDIA_SLA_cuDNN_Support.txt\n└── cudnn_install.sh\n\n3 directories, 2 files\n\n\nScript to move cuDNN to right folders\n\nAdd below content to new cudnn_install.sh and run this command chmod +x cudnn_install.sh &amp; sudo ./cudnn_install.sh on extracted cuDNN zip folder\n\nread -p \"CUDA-version: \" ver\ncp cuda/include/cudnn.h /usr/local/cuda-\"${ver}\"/include\ncp cuda/lib64/libcudnn* /usr/local/cuda-\"${ver}\"/lib64\nchmod a+r /usr/local/cuda*/include/cudnn.h /usr/local/cuda*/lib64/libcudnn*\n\n\nFinal Results\n\nMy current system now got CUDA 9.0 to 10.2 versions.\n\najayramesh @ ubox-r9-1804 /usr/local\n└─ $ ▶ tree -L 1\n.\n├── bin\n├── cuda-10.0\n├── cuda-10.1\n├── cuda-10.2\n├── cuda-9.0\n├── cuda-9.1\n├── cuda-9.2\n├── etc\n├── games\n├── include\n├── lib\n├── man -&gt; share/man\n├── sbin\n├── share\n├── src\n└── texlive\n\n16 directories, 0 files\n\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2020-05-26-installing-multiple-versions-of-cuda-cudnn/"
+    },{
+      "image": "/assets/blog/jhipster.png",
+      "title": "Try JHipster using Docker",
+      "date": "2021-07-29 00:00:00 -0400",
+      "description": "This blog is written to help you to test JHipster, without worrying much about installation of it. It’s been a year with Jhipster, as a token of appreciation to community, writing this blog for those who wants to try out this platform quickly.\n",
+      "content": "\n  Pre-requirements\n  Step 0.1: Create Docker file\n  Step 0.2: Create app.jdl file\n  Step 1: Build the Container\n  Step 2: Run the Jhipster App\n  Source Code\n\n\nJHipster  is a development platform to quickly generate, develop, &amp; deploy modern web applications &amp; microservice architectures.\nIt’s been a year with Jhipster, as a token of appreciation to community, writing this blog for those who wants to try out this platform quickly.\n\nPre-requirements\n\n  Docker\n\n\nStep 0.1: Create Docker file\n\nCreate a file, name it as Dockerfile, add below content.\nFROM node:14.16\nRUN apt-get update &amp;&amp; apt-get install -y libasound2 libxtst6\nRUN wget https://download.bell-sw.com/java/11.0.11+9/bellsoft-jdk11.0.11+9-linux-amd64.deb &amp;&amp; \\\n    apt install ./bellsoft-jdk11.0.11+9-linux-amd64.deb \n\nRUN npm install -g generator-jhipster\n\nRUN  [ \"java\", \"-version\" ]\nRUN jhipster --version\n\nRUN mkdir app\nCOPY app.jdl /app\nRUN cd /app\nRUN export NG_CLI_ANALYTICS=ci\nWORKDIR  /app\nRUN [ \"jhipster\", \"jdl\", \"app.jdl\", \"--no-insight\"]\n\n\nStep 0.2: Create app.jdl file\nJDL - JHipster Domain Language to define your app, for more try this jdl-studio\nI wanted to keep it simple and short, so here I am creating entity News to store news.\n\napplication {\n  config {\n    applicationType monolith\n    authenticationType jwt\n    baseName NewsFeed\n    buildTool maven\n    clientFramework angularX\n    clientTheme yeti\n    clientPackageManager npm\n    databaseType sql\n    devDatabaseType h2Disk\n    dtoSuffix DTO\n    enableHibernateCache true\n    enableSwaggerCodegen true\n    enableTranslation false\n    jhiPrefix hg\n    packageName com.news.app\n    prodDatabaseType postgresql\n    reactive false\n    searchEngine false\n    serverPort 8080\n    serviceDiscoveryType no\n    skipClient false\n    skipServer false\n    testFrameworks []\n    websocket false\n  }\n  entities *\n}\n\nentity News {\n  name String\n  icon ImageBlob\n  date LocalDate\n  content TextBlob\n}\n\n\nStep 1: Build the Container\nFirst let’s build the container, which installs the JHipster in local, creates the application with News entity.\ndocker build -t jhipsterlab:latest .   \n\nStep 2: Run the Jhipster App\n\ndocker container run --name jhipsterLab -p 9999:8080  -it jhipsterlab:latest  /bin/bash ./mvnw\n\nNow your application is running in below port.\nhttp://localhost:9999\n\n\n\nSource Code\n\nEntire project is avialble here, feel free to clone and play around.\nhttps://github.com/notesbyair/jhipster-hello-world-app\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-07-29-Jhipster-docker/"
+    },{
+      "image": "/assets/blog/10-2021/mindmap.png",
+      "title": "My fav technologies mind map",
+      "date": "2021-10-31 00:00:00 -0400",
+      "description": "Let me list my favorite tecnology stack as a mind map, feel free to suggest any edits.\n",
+      "content": "Today, I wanted to create a Mind map on all technologies, so here I am with this mind map diagram. Feel free to suggest any technology!\n\n\n\nReferences -\n\n  https://stackshare.io/feed\n  https://db-engines.com/en/ranking\n  Image by akitada31 from Pixabay\n\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-10-31-my-fav-technologies-mind-map/"
+    },{
+      "image": "/assets/blog/2021/screenshot.jpg",
+      "title": "How to map a Java Bean using mapstruct library ?",
+      "date": "2021-11-07 00:00:00 -0400",
+      "description": "Five min introduction on mapstruct for Java Bean Mapping.\n",
+      "content": "\n  Why mapping ?\n  Example Project Setup\n  How to map using mapstruct annotation ?\n  Testing\n  How it works ?\n  References\n  Conclusion\n\n\nThis blog, I am going to show a simple example for the understanding on Java Bean Mapping.\n\nWhy mapping ?\n\n  Convert Java Bean/POJO to Another Bean/POJO with different names.\n  Create Report Json with additional calculations.\n  For using DTO Design Pattern.\n\n\nExample Project Setup\n\ngit clone https://github.com/notesbyair/blog.mapstruct.git\n\n\nIn this example, we have a Java Bean - Car, we want to convert it to `CarDTO object where it is has different names for mapping.\n\n\n\nHow to map using mapstruct annotation ?\n\nDefine a mapper interface for above conversion, it will convert Car to CarDto. The mapstruct library generates the implementations for it.\n\nIn below interface source:Car, target: CarDto.\n\n// file: \"CarMapper.java\"\nimport org.mapstruct.Mapper;\nimport org.mapstruct.Mapping;\nimport org.mapstruct.factory.Mappers;\n\n@Mapper\npublic interface CarMapper {\n    CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );\n    @Mapping(target = \"seats\", source = \"seatConfiguration\")\n    CarDto convert(Car car);\n\n    @Mapping(source = \"numberOfSeats\", target = \"seatCount\")\n    @Mapping(source = \"seatMaterial\", target = \"material\")\n    SeatConfigurationDto seatConfigurationToSeatConfigurationDto(SeatConfiguration seatConfiguration);\n}\n\nCarMapper for Converting Car to CarDTO\n\nTesting\n@Test\nvoid testMapping() {\n  Car car = new Car();\n  car.setMake(\"Tesla\");\n  car.setType(CarType.SPORTS);\n  car.setSeatConfiguration(new SeatConfiguration(1, SeatMaterial.LEATHER));\n  CarDto carDTO = CarMapper.INSTANCE.convert(car);\n  assertEquals(car.getMake(), carDTO.getMake());\n  assertEquals(car.getType().toString(), carDTO.getType());\n  assertEquals(car.getSeatConfiguration().getSeatMaterial().toString(),\n      carDTO.getSeats().getMaterial());\n}\n\n\nHow it works ?\n\n  If Source and Target bean contains same name, then it will convert directly, for example make is same name in both beans. For all other, you need to define a names using mapping annotation like shown in above.\n  You need to define another mapping, which will convert the seatConfiguration. For more, refer this section of the blog post\n    \n      Mapping Beans with Child Beans  \n    \n  \n\n\nReferences\n\n\n  Quick Guide to MapStruct\n  https://mapstruct.org/\n  https://mapstruct.org/documentation/installation/\n\n\nConclusion\n\nUsing mapstruct, we can easily map Java Beans/POJO using less number of codes. Hope this gives nice introduction, let me know for any doubts here.\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-11-07-MapStruct-Tutorial/"
+    },{
+      "image": "/assets/blog/2021/11-14/image/wall.jpg",
+      "title": "What is present inside a Video ?",
+      "date": "2021-11-14 00:00:00 -0500",
+      "description": "Let’s revisit our understanding on Video. We have many Video format for diverse applications.  Understanding a video format helps in applying right way. Let’s check our understanding here.\n",
+      "content": "\n  Lab    \n      Container information\n      Codec information\n    \n  \n  Concepts    \n      What is codec and how it works ?\n    \n  \n  Further reading\n\n\nVideo contains two main parts, Codec and Container.\n\nContainer: - we can find out easily by looking at video file extension.\nCodec: - Software to Compresses or De-Compresses the Video.\n\n\nLab\n\n\n  Use any video or download a sample video file from this location - MP4-Sample video.\n  Download the MediaInfo Software\n\n\nContainer information\n\n\n  If you see below, it contains three parts.\n  \n\n\nCodec information\n\n\n  How video is compressed? Here, this sample video is using H264 codec to compress the video.\n  In below, you see Codec Information about video file using Media Info.\n  \n\n\nConcepts\n\nWhat is codec and how it works ?\n\nCodec is the reason we can play, store or stream the video, there are tons of codecs available today.\n\n\n  Video is a series of images.\n    \n      Main Idea: Most experts have a tough time agreeing on an exact number, but the conclusion is that most humans can see at a rate of 30 to 60 frames per second.\n      Video player plays these images one by one based on time.\n        \n          So, we can optimize on how we are going to save the Video, right ? We don’t need to save 30-60 images per second.\n        \n      \n    \n  \n  How to save these images as video file ? What Algorithm works ?\n    \n      Humans invented the Codecs, which compresses/de-compresses the video file using many techniques in computer vision.\n      Simple example of one technique to compress series of images with  visualization video is here  \n    \n  \n\n\nFurther reading\n\n\n  H264 Overview\n  Understanding H264\n  Discrete cosine transform\n  How many frames per second\n\n\nLet me know for comments.\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-11-14-understanding-video-content-type-basics/"
+    },{
+      "image": "/assets/blog/2021/11-21/title.png",
+      "title": "Simple basic metrics to measure the AI model performance",
+      "date": "2021-11-21 00:00:00 -0500",
+      "description": "What is Accuracy, Recall, Precision, TP, FP, TN, TP ?\n",
+      "content": "\n  Terms - TP, TN, FP, FN    \n      True Positive and True Negative\n      False Positive and False Negative\n    \n  \n  Metrics    \n      Accuracy\n      Recall\n      Precision\n    \n  \n  References\n\n\nToday, I am going to explain basic metrics used to measure the AI Model. I wanted to keep it very short blog on this topic, after understanding the metrics hard way1. Since, I am writing this during COVID time, consider an example, where I build an AI Model which classifies a person report as  COVID or not.\n\nTerms - TP, TN, FP, FN\n\nTrue Positive and True Negative\n\n\nFalse Positive and False Negative\nIn order to avoid confusion, read from right-left, for example - FALSE-POSITIVE, meaning model predicted the output as positive but it is not right/false. \n\n\nMetrics\nAccuracy\nIf it is 100% accurate model, the model predicts actual as actual, something like below. In practical world, if the model is 100% accurate means, it is overfitting the model to data, and it needs to be revised. \n\n\nRecall\nWhat proportion of actual positives was identified correctly ? 1\nBelow table got 50% recall, meaning 50% of the time if Model predicts COVID, then 50% of the time it is actual. \n\n\nPrecision\nWhat proportion of positive identifications was actually correct ? 1\nIn below example, precision is 0%, meaning predicted positive output is not right, the Model says - “person doesn’t have covid, but in reality person got covid” \n\n\nReferences\n\n  Download the excel file from this link\n\n\n\n  \n    \n      https://developers.google.com/machine-learning/crash-course/classification/check-your-understanding-accuracy-precision-recall?hl=en &#8617; &#8617;2 &#8617;3\n    \n  \n\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-11-21-simple-basic-metrics-to-measure-the-AI-model-performance/"
+    },{
+      "image": "/assets/blog/2021/11-28/DraggedImage.png",
+      "title": "How to plot AUC - ROC Curve using Python?",
+      "date": "2021-11-26 00:00:00 -0500",
+      "description": "Today let me explain a simple ROC graph and its basic understanding with an example. I am using simple dataset, so that you can play around to test the theory behind it. Let’s apply to classify breast cancer data.\n",
+      "content": "In this example, we are using Classification problem, where you need to classify on breast cancer based some input data.\n\nWorking code\n\nTry this in Google Collaborator Lab1, or any Python environment to get started.\n\nfrom sklearn import svm, datasets\nfrom sklearn import metrics\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import load_breast_cancer\nimport matplotlib.pyplot as plt\n\n# Load Data\nbreast_cancer = load_breast_cancer()\n\nX = breast_cancer.data\ny = breast_cancer.target\n\n# Split the Dataset to Train and Test\nX_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.33, random_state=44)\n\n# Train the Model\nclf = LogisticRegression(penalty='l2', C=0.1)\nclf.fit(X_train, y_train)\ny_pred = clf.predict(X_test)\n\n# Test the model using AOC-ROC Graph\ny_pred_proba = clf.predict_proba(X_test)[::,1]\nfpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)\nauc = metrics.roc_auc_score(y_test, y_pred_proba)\nplt.plot(fpr,tpr,label=\"data 1, auc=\"+str(auc))\nplt.legend(loc=4)\nplt.show()\n\n\nOutput - AUROC Graph\n\n\n\nTPR - True Positive Rate\n\nTrue positive, means model predicted Breast Cancer and that is True for entire dataset. What is the TPR ? Mathematically, TPR = TP/TP+FN - it is also known as Recall, if TPR is 1, then for that particular point of time, there were no mistakes done.\n\n\n  TPR=1, if no mistakes made by algorithm.\nTPR is also knows as Recall/Sensitivity of Model.\n\n\nFPR - False Positive Rate\n\nUsing FPR, we can tell about the accuracy of the model performance. If it is not good, then FPR will almost equal to 1, meaning it says Breast Cancer but in actual case there is no Breast Cancer. Another example, you are not pregnant in actual case, but model says you pregnant.\n\nIf it is good model, then FPR should equate to 0, by making Specificity =1, that means, you have developed model which will correctly classifies, great job 🎉\n\nFPR = 1 - Specificity\n\n\nCombining the TPR and FPR = AUROC\n\nIn order to find behavior of model over test data, draw plot and see the Area under Curve value, if it near to 1 means model is fitting right, looks like you got the awesome model. In above code, I am getting Areas as 0.99.., which is a good model using Logistic Regression.\n\nFurther Reading\n\n\n  Confusion Matrix\n  Understanding Auc curve\n  Simple basic metrics to measure the AI model performance\n  Code playground to test the theory…\n  Awesome video explanation here\n\n\n\n  \n    \n      https://colab.research.google.com/drive/1tRR6VatCVmpWZaHFJ47Xtyz3GzUZ1wu2?usp=sharing &#8617;\n    \n  \n\n",
+      "categories": ["cs"],
+      "tags": [],
+      
+      "collection": "posts",
+      "url": "/blog/cs/2021-11-26-ROC/"
+    },{
+      "image": "/assets/bookmark.jpg",
+      "title": "Good Links",
+      "date": "2021-12-05 00:00:00 -0500",
+      "description": "Good Links on CS\n",
+      "content": "coming soon!\n",
+      "categories": ["bookmarks"],
+      "tags": ["cs","bookmarks"],
+      
+      "collection": "posts",
+      "url": "/blog/bookmarks/2021-12-05-good-links/"
+    },{
+      
+      "title": "bookmarks",
+      "date": "2022-11-12 13:53:48 -0500",
+      "description": "Bookmarks - all interesting links and articles\n",
+      "content": "\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "featured_categories",
+      "url": "/blog/bookmarks/"
+    },{
+      
+      "title": "cs",
+      "date": "2022-11-12 13:53:48 -0500",
+      "description": "Computer Science Blogs\n",
+      "content": "\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "featured_categories",
+      "url": "/blog/cs/"
+    },{
+      "image": "/assets/projects/oauth.png",
+      "title": "OAuth-Implementation",
+      "date": "2016-01-02 00:00:00 -0500",
+      
+      "content": "\n\n\n\n\n\n\n\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/OAuth-Implementation/"
+    },{
+      "image": "/assets/projects/mld.png",
+      "title": "digit-recognition",
+      "date": "2016-12-10 00:00:00 -0500",
+      
+      "content": "\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/digit-recognition/"
+    },{
+      "image": "/assets/projects/chapel.JPG",
+      "title": "chapel",
+      "date": "2017-05-10 00:00:00 -0400",
+      "description": "Interoperability calls from Chapel-language to C for HDF5 library.\n",
+      "content": "HDF5 (note: not HDFS) is a common data interchange format for scientific applications. Since Chapel is intended to work well for scientific programming, having HDF5 support is important.\n\n\n  In this open-source contribution, I have developed a simple POC which mimics the overall idea to support the HDF5 library in Chapel language\n\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/chapel/"
+    },{
+      "image": "/assets/projects/calculator.PNG",
+      "title": "ios-calculator",
+      "date": "2017-06-05 00:00:00 -0400",
+      "description": "A simple iOS app\n",
+      "content": "\n\n//\n//  CalculatorBrain.swift\n//  Calculator\n//\n//  Created by Ajay Ramesh on 5/21/17.\n//  Copyright © 2017 Ajay Ramesh. All rights reserved.\n//\n\nimport Foundation\n\nfunc test(t:Double) -&gt;Void{\n    print(\"\\(t)\");\n}\nstruct CalculatorBrain {\n    private var accumalator : Double?\n    \n    private enum Operation {\n        case constant(Double)\n        case unaryOperation((Double) -&gt; Double)\n        case binaryOperation((Double, Double) -&gt; Double)\n        case equals\n        case dotTODO((Double)-&gt;Void)\n    }\n    \n    private var operations: Dictionary&lt;String, Operation&gt; = [\n        \"π\" : Operation.constant(Double.pi),\n        \"e\" : Operation.constant(M_E),\n        \"√\" : Operation.unaryOperation(sqrt),\n        \"cos\" : Operation.unaryOperation(cos),\n        \"±\" : Operation.unaryOperation({-$0}),\n        \"×\" : Operation.binaryOperation({ $0 * $1} ),\n        \"÷\" : Operation.binaryOperation({ $0 / $1}),\n        \"+\" : Operation.binaryOperation({ $0 + $1} ),\n        \"－\" : Operation.binaryOperation({ $0 - $1}),\n        \"=\" : Operation.equals,\n        \".\" : Operation.dotTODO(test)\n    ]\n    \n    \n    mutating func performOperation(_ symbol: String )  {\n        if let operation = operations[symbol] {\n            switch operation {\n            case .constant(let value):\n                accumalator = value\n            case .unaryOperation(let function):\n                if accumalator != nil {\n                    accumalator = function(accumalator!)\n                }\n            case .binaryOperation(let function):\n                if accumalator != nil {\n                    pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumalator!)\n                    accumalator = nil\n                }\n            case .equals:\n                performPendingBinaryOperation()\n            \n            case .dotTODO(let function):\n                if(accumalator != nil ){\n                    function(accumalator!)\n                }\n            }\n        }\n    }\n    \n    mutating private func performPendingBinaryOperation(){\n        if pendingBinaryOperation != nil &amp;&amp; accumalator != nil {\n            accumalator = pendingBinaryOperation!.perform(with: accumalator!)\n            pendingBinaryOperation = nil\n        }\n        \n    }\n    \n    private var pendingBinaryOperation: PendingBinaryOperation?\n    \n    private struct PendingBinaryOperation {\n        let function: (Double, Double) -&gt; Double\n        let firstOperand: Double\n        \n        func perform(with secondOperand:Double) -&gt; Double {\n            return function(firstOperand, secondOperand)\n        }\n    }\n    \n    mutating func setOperand(_ operand: Double)  {\n        accumalator = operand\n    }\n    \n    var result: Double? {\n        get {\n            return accumalator\n        }\n    }\n}\n\n\n  Main Controller source code\n\n\n//\n//  ViewController.swift\n//  Calculator\n//\n//  Created by Ajay Ramesh on 4/4/17.\n//  Copyright © 2017 Ajay Ramesh. All rights reserved.\n//\nimport UIKit\n\nclass ViewController: UIViewController {\n    \n    @IBOutlet weak var display: UILabel!\n    \n    var userIsInMiddleOfTyping = false\n    \n    @IBAction func touchDigit(_ sender: UIButton) {\n        let digit = sender.currentTitle!\n        if userIsInMiddleOfTyping{\n            let textCurrentlyInDisplay = display!.text!\n            display.text = textCurrentlyInDisplay + digit\n        } else {\n            display.text! = digit\n            userIsInMiddleOfTyping = true\n        }\n    }\n    \n    var displayValue : Double{\n        get{\n            return Double(display.text!)!\n        }\n        set {\n            display.text = String(newValue)\n        }\n    }\n    \n    private var brain = CalculatorBrain()\n    \n    @IBAction func performOperation(_ sender: UIButton) {\n        if(userIsInMiddleOfTyping){\n            brain.setOperand(displayValue)\n            userIsInMiddleOfTyping = false\n        }\n        \n        if let mathematicalSymbol = sender.currentTitle {\n            brain.performOperation(mathematicalSymbol)\n        }\n        if let result = brain.result {\n            displayValue = result\n        }\n    }\n    \n}\n\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/ios-calculator/"
+    },{
+      "image": "/assets/projects/download.JPG",
+      "title": "bigfile-node-server-client",
+      "date": "2017-06-10 00:00:00 -0400",
+      
+      "content": "\n  Download big file with progress bar in Nodejs\n\n\n// Working code \nvar fs = require('fs');\nvar request = require('request');\nvar progress = require('request-progress');\nvar url = 'http://localhost:4181';\nvar filename = 's.zip';\nvar pre = '----';\n\ndownloadManager = function(url,filename){\n    progress(request(url), {\n\tthrottle:500\n    })\t.on('progress', function (state) {\n\t    process.stdout.write(pre+''+ (Math.round(state.percent*100))+\"%\");\n\t})\n\t.on('error', function (err) {\n\t    console.log('error :( '+err);\n\t})\n\t.on('end', function () {\n\t    console.log(pre+'100% \\n Download Completed');\n\t})\n\t.pipe(fs.createWriteStream(filename));\n};\n\n\ndownloadManager(url,filename);\n\n\n\n  File Server Code is below\n\n\nvar http = require(\"http\");\nvar fs = require(\"fs\");\nvar location = \"base/RealBigFile.zip\";\nvar PORT = 4181;\n\nvar fileServerInit = function (loc) {\n    var serv = http.createServer(function (req, res) {\n        var stat = fs.statSync(loc);\n        res.writeHeader(200, {\n            \"Content-Length\": stat.size\n        });\n        var fReadStream = fs.createReadStream(loc);\n        fReadStream.on('data', function (chunk) {\n            if (!res.write(chunk)) {\n                fReadStream.pause();\n            }\n        });\n        fReadStream.on('end', function () {\n            console.log(\"File is uploaded\")\n            serv.close();\n        });\n        res.on(\"drain\", function () {\n            fReadStream.resume();\n        });\n    });\n    console.log(\"File is ready \"+loc+\" Listening for incoming connection\");\n    serv.listen(PORT);\n    \n    \n}\n\nfileServerInit(location);\n\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/bigfile-node-server-client/"
+    },{
+      "image": "/assets/projects/cd.jpg",
+      "title": "CD",
+      "date": "2017-12-01 00:00:00 -0500",
+      "description": "CD - Create Dataset is a by product of Active learning on any dataset. By involving additional rational, we are creating another better training set using CD web ui and its Active learning loop. We witnessed by incorporating rational we achieved better accuracy and transparency in the prediction. We also shown comparison between with and without rational learning, the predictions of with rational from human are more trust worthy and making more sense when it is compared to actual results.\n",
+      "content": "\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/CD/"
+    },{
+      "image": "/assets/projects/cake.JPG",
+      "title": "CAKE",
+      "date": "2017-12-15 00:00:00 -0500",
+      "description": "Surved on all major Scheduling Frameworks, such as Borg, YARN, Paragon, Omega, Mesos, etc. Proposed another frameworkd using AI(Genetic Algortihm) and CUDA power.\n",
+      "content": "A good plan consumes all available facts during decision making. An excellent plan can be intelligent if it takes further inferences from available facts. In short, we are talking about Artificial Intelligence in Scheduling. We see AI is the new electricity for any application. Scheduling is the key to an Application and Organization Success. A good scheduling will make the application faster if and only if the scheduling is fast. Organization benefits if scheduling maximizes the cluster utilization. In short, scheduling’s key idea is to maximize cluster utilization use and minimize latency. The existing framework does proper scheduling but uses the only tiny portion of Knowledge.\n\nCluster Allocation for Kernel Execution  This paper summarizes our study of many scheduler architectures, and our own design of new pluggable scheduler framework called CAKE, which uses Genetic Algorithm, an Artificial Intelligence technique, for scheduling. We have presented our thoughts about why we need CAKE framework and we have also mentioned few self-critics for it.\n\nWe have also given proof of concept for CAKE using Genetic Algorithm. Our research notes section describes why advanced concepts (AI, etc) in scheduling must be unified by all researchers in Apache Open Source project, such that any application or organization will not worry about scheduling at all.\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/CAKE/"
+    },{
+      "image": "/assets/projects/vertico.jpg",
+      "title": "VERTICO",
+      "date": "2018-01-02 00:00:00 -0500",
+      
+      "content": "In Volunteer Computing (VC), Volunteers donate their idle computers to many scientific projects like\nFolding@home for understanding protein folding and how it relates to disease. VC applies to the particular set of problems.\n\nTypically VC projects work by breaking the problems into chunks called work units, which are sent to computers around\nthe world to be analyzed. We are aiming to extend the idea of VC to different\nkinds of applications which live in the cloud, so that we minimize the operating cost.\n\nVC for Cloud is challenging problem till today. Addressing those issues and providing\npossible solution design is our goal.\n\n  The end product will have many benefits, for example, an organization can minimize the Power bills and donate monetary credits to Volunteers.\n\n\nIt is like a win-win situation for volunteers and organization.\nSo we introduce VERTICO, stands for Volunteer Computing Research Cloud Framework. In this paper, we are giving\npossible solution design for VERTICO and its evaluations.\n",
+      "categories": [],
+      "tags": [],
+      
+      "collection": "projects",
+      "url": "/projects/VERTICO/"
+    }
+  ]
+}
+
